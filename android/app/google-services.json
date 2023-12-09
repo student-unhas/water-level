@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "866093556880",
+    "project_id": "tugas-water-level",
+    "storage_bucket": "tugas-water-level.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866093556880:android:fe6dc9f8bff57e87db6415",
+        "android_client_info": {
+          "package_name": "com.example.final_cimming"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf4_QUCMEvs7R54HS7DsTFEUhJ8nVQV24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
