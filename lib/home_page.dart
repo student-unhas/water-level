@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -9,8 +12,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final dbRef = FirebaseDatabase.instance.ref();
+
   @override
   Widget build(BuildContext context) {
+    readData();
     return Scaffold(
       backgroundColor: const Color(0xff2a2744),
       appBar: AppBar(
@@ -20,22 +26,70 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                CardWidget(
-                  title: "Water Level",
-                  desc: "50%",
-                ),
-              ],
-            )
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: StreamBuilder(
+            stream: dbRef.child("data").onValue,
+            builder: (context, snapshot) {
+              print(snapshot.data?.snapshot);
+              if (snapshot.hasData &&
+                  !snapshot.hasError &&
+                  snapshot.data?.snapshot != null) {
+                final jsonData = jsonEncode(snapshot.data!.snapshot.value);
+
+                var sensorData = SensorData.fromJson(jsonDecode(jsonData));
+
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        CardWidget(
+                          title: "Water Level",
+                          desc: "${sensorData.level}%",
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              } else {
+                return Container();
+              }
+            }),
       ),
     );
+  }
+
+  Future<void> readData() async {
+    print('sdsd');
+    // dbRef.child("data").once().then((DatabaseEvent value) {
+    //   print("value.snapshot.value");
+    //   print(value.snapshot.value);
+    // });
+
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('data').get();
+    if (snapshot.exists) {
+      print(snapshot.value);
+    } else {
+      print('No data available.');
+    }
+  }
+}
+
+class SensorData {
+  final String level;
+
+  SensorData({required this.level});
+
+  factory SensorData.fromJson(Map<String, dynamic> json) {
+    return SensorData(
+      level: json['level'].toString(),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'SensorData{temperature:  level: $level}';
   }
 }
 

@@ -17,24 +17,15 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -52,11 +43,42 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyAiY47xTM-r_8BPI5MY3yLeyu1IUoZq0Co',
+    appId: '1:866093556880:web:289225a14e23623fdb6415',
+    messagingSenderId: '866093556880',
+    projectId: 'tugas-water-level',
+    authDomain: 'tugas-water-level.firebaseapp.com',
+    databaseURL: 'https://tugas-water-level-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'tugas-water-level.appspot.com',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBf4_QUCMEvs7R54HS7DsTFEUhJ8nVQV24',
     appId: '1:866093556880:android:fe6dc9f8bff57e87db6415',
     messagingSenderId: '866093556880',
     projectId: 'tugas-water-level',
+    databaseURL: 'https://tugas-water-level-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'tugas-water-level.appspot.com',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyC6vc59nC5FA6XQ-LX74NbX6RH27s4uFVk',
+    appId: '1:866093556880:ios:3460e8f2bef1700cdb6415',
+    messagingSenderId: '866093556880',
+    projectId: 'tugas-water-level',
+    databaseURL: 'https://tugas-water-level-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'tugas-water-level.appspot.com',
+    iosBundleId: 'com.example.finalCimming',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyC6vc59nC5FA6XQ-LX74NbX6RH27s4uFVk',
+    appId: '1:866093556880:ios:de84a3538159ef37db6415',
+    messagingSenderId: '866093556880',
+    projectId: 'tugas-water-level',
+    databaseURL: 'https://tugas-water-level-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'tugas-water-level.appspot.com',
+    iosBundleId: 'com.example.finalCimming.RunnerTests',
   );
 }
