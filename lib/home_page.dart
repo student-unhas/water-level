@@ -18,43 +18,148 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     readData();
     return Scaffold(
-      backgroundColor: const Color(0xff2a2744),
-      appBar: AppBar(
-        backgroundColor: const Color(0xff2a2744),
-        title: const Text(
-          "Water Control",
-          style: TextStyle(color: Colors.white),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/bg.png"),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: StreamBuilder(
-            stream: dbRef.child("data").onValue,
-            builder: (context, snapshot) {
-              print(snapshot.data?.snapshot);
-              if (snapshot.hasData &&
-                  !snapshot.hasError &&
-                  snapshot.data?.snapshot != null) {
-                final jsonData = jsonEncode(snapshot.data!.snapshot.value);
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Water \nControl",
+                  style: TextStyle(
+                      color: Color(0xff007be3),
+                      fontSize: 40,
+                      height: 1,
+                      fontWeight: FontWeight.w600),
+                ),
+                const Text(
+                  "Smart Home",
+                  style: TextStyle(
+                      color: Color(0xff007be3),
+                      fontSize: 20,
+                      height: 1,
+                      fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: StreamBuilder(
+                      stream: dbRef.child("data").onValue,
+                      builder: (context, snapshot) {
+                        print(snapshot.data?.snapshot);
+                        if (snapshot.hasData &&
+                            !snapshot.hasError &&
+                            snapshot.data?.snapshot != null) {
+                          final jsonData =
+                              jsonEncode(snapshot.data!.snapshot.value);
 
-                var sensorData = SensorData.fromJson(jsonDecode(jsonData));
+                          var sensorData =
+                              SensorData.fromJson(jsonDecode(jsonData));
 
-                return Column(
-                  children: [
-                    Row(
-                      children: [
-                        CardWidget(
-                          title: "Water Level",
-                          desc: "${sensorData.level}%",
-                        ),
-                      ],
-                    )
-                  ],
-                );
-              } else {
-                return Container();
-              }
-            }),
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: CardWidget(
+                                  title: "Water Level",
+                                  desc: sensorData.level,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  padding: const EdgeInsets.all(9),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.withOpacity(.2),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Stack(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Expanded(
+                                                flex: int.parse(
+                                                            sensorData.level) >
+                                                        100
+                                                    ? 0
+                                                    : 100 -
+                                                        int.parse(
+                                                            sensorData.level),
+                                                child: const SizedBox()),
+                                            Expanded(
+                                              flex: int.parse(
+                                                          sensorData.level) >
+                                                      100
+                                                  ? 100
+                                                  : int.parse(sensorData.level),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0xff007be3),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            16)),
+                                                width: double.infinity,
+                                                height: double.infinity,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: 70,
+                                            height: 70,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white
+                                                    .withOpacity(.5),
+                                                shape: BoxShape.circle),
+                                            child: Center(
+                                                child: Text(
+                                              int.parse(sensorData.level) > 100
+                                                  ? "100%"
+                                                  : "${sensorData.level}%",
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black,
+                                                  fontSize: 20),
+                                            )),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -101,32 +206,48 @@ class CardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        width: double.infinity,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: const Color(0xff3a395b)),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-          const IconWidget(),
-          const SizedBox(
-            height: 30,
-          ),
-          Text(
-            title ?? "not found",
-            style: const TextStyle(color: Colors.white, fontSize: 18),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Text(
-            desc ?? "not found",
-            style: const TextStyle(
-                color: Colors.white, fontSize: 40, fontWeight: FontWeight.w500),
-          )
-        ]),
-      ),
+    int level = int.parse(desc ?? "0");
+    return Container(
+      padding: const EdgeInsets.all(15),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20), color: Colors.white),
+      child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const IconWidget(),
+            Text(
+              "Matikan Pompa",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: level > 90
+                      ? const Color(0xff44966a)
+                      : Colors.grey.withOpacity(.8),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "Air Tersedia",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: level > 40 && level < 90
+                      ? const Color(0xff44966a)
+                      : Colors.grey.withOpacity(.8),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+            Text(
+              "Nyalakan Pompa",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: level < 40
+                      ? const Color(0xff44966a)
+                      : Colors.grey.withOpacity(.8),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
+            ),
+          ]),
     );
   }
 }
